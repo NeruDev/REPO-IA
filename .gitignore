@@ -1,0 +1,64 @@
+# === ESTANDARES DEL SISTEMA OPERATIVO (WINDOWS) ===
+# Archivos temporales de sistema y miniaturas
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# === ENTORNOS VIRTUALES Y PYTHON ===
+# Cache de Python y archivos compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales (venv)
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+include/
+
+# Distribucion y empaquetado
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+
+# === HERRAMIENTAS DE EDICION Y LENGUAJE ===
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Obsidian (Ajustes locales y sincronizacion)
+.obsidian/workspace
+.obsidian/workspace.json
+
+# Jupyter Notebooks (comun en proyectos de IA)
+.ipynb_checkpoints
+
+# === SEGURIDAD Y DATOS ===
+# Archivos de entorno y secretos
+.env
+.venv
+secrets.json
+
+# Datos temporales o de salida (JSON)
+data/output/
+data/temp/
+*.log
+
+# === ARCHIVOS DE RESPALDO ===
+*.bak
+*.swp
+*~
