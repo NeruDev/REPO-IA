@@ -6,7 +6,7 @@ applyTo: "**/*.md"
 # Reglas para Markdown
 
 - Escribir en español con tono técnico y conciso: imperativo para instrucciones, tercera persona para descripciones.
-- Empezar cada documento con el frontmatter de [ADR-0002](../../docs/adr/0002-frontmatter-schema.md): una clave por línea, listas en línea `[a, b]` y comillas dobles si el valor contiene `:`.
+- Empezar cada documento con el frontmatter de [ADR-0002](../../docs/adr/0002-frontmatter-schema.md): una clave por línea, listas en línea `[a, b]` y comillas dobles si el valor contiene `:`. Excepciones según ADR-0002: adaptadores (`CLAUDE.md`, `.github/copilot-instructions.md`) sin frontmatter e instrucciones (`*.instructions.md`) con esquema propio (`applyTo`, `description`).
 - Generar el `id` con el procedimiento de [CONTRIBUTING.md](../../CONTRIBUTING.md). Nunca inventarlo, copiarlo ni cambiar uno existente.
 - Mantener `name` igual al nombre del archivo en snake_case y `file_path` igual a la ruta desde la raíz.
 - Actualizar `updated_at` (UTC) al cambiar el contenido.

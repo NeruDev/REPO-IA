@@ -7,7 +7,7 @@ category: architecture
 tags: [architecture, estructura, autoevaluacion, linters]
 description: "Estructura de carpetas, reparto de responsabilidades entre scripts propios y linters, y resolución de las bases teóricas externas."
 status: active
-updated_at: 2026-10-06T22:36:35Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # Arquitectura
@@ -50,7 +50,7 @@ El repositorio tiene tres piezas: documentación por capas (cada archivo respond
 └── .venv/                          Entorno virtual de Python (local, ignorado por git)
 ```
 
-La autoevaluación es POSIX `sh`; las utilidades pueden usar PowerShell 7 o Python dentro de `.venv/` ([ADR-0003](docs/adr/0003-scripting-languages.md)).
+La autoevaluación es POSIX `sh`; las utilidades pueden usar Python dentro de `.venv/` ([ADR-0003](docs/adr/0003-scripting-languages.md), [ADR-0006](docs/adr/0006-entorno-wsl-ubuntu-bash.md)).
 
 ## Autoevaluación
 
@@ -87,7 +87,7 @@ Comportamiento:
 - Si un linter no está instalado, se emite un `AVISO` con el comando de instalación y se omite. Con `CHECK_STRICT=1` cuenta como fallo.
 - Sin bases externas configuradas solo hay un `AVISO`, para que un clon recién creado pase el chequeo.
 - `list_files` excluye el área efímera por defecto; `sh scripts/check.sh RUTA ...` añade rutas explícitas para promoción, con las mismas reglas de los linters y de documentación.
-- Límites conocidos: no se validan las anclas hacia otros archivos (`otro.md#seccion`). El aislamiento revisa tanto índice como copia de trabajo; los demás chequeos revisan la copia de trabajo.
+- Límites conocidos: no se validan las anclas hacia otros archivos (`otro.md#seccion`). El aislamiento revisa tanto índice como copia de trabajo; los demás chequeos revisan la copia de trabajo. Por ello, las regresiones de `tests/sandbox.sh` deben ejecutarse explícitamente al modificar el aislamiento efímero, el hook o la selección de archivos (no forman parte de cada invocación ordinaria de `check.sh`). Si en el futuro el flujo adopta commits parciales frecuentes o colaboración remota con CI, se considerará validar el commit preparado o en pipeline; el hook local no es una barrera invulnerable.
 - El análisis de dependencias es estático: detecta el nombre literal de la zona en archivos operativos, no rutas construidas dinámicamente. Las menciones Markdown son documentales, no autorizan dependencias de ejecución.
 - La limpieza exige raíz de plantilla, rechaza enlaces y solo borra unidades inmediatas completas; sin escrituras concurrentes. Detalles y excepciones en [ADR-0005](docs/adr/0005-ephemeral-workspace.md).
 

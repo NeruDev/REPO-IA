@@ -7,7 +7,7 @@ category: architecture
 tags: [adr, shell, powershell, python, venv, json, dependencias]
 description: "Amplía los lenguajes permitidos: la autoevaluación sigue en POSIX sh y las utilidades pueden usar PowerShell 7 o Python dentro de .venv/. Sustituye el tema Dependencias del ADR-0001."
 status: accepted
-updated_at: 2026-10-04T23:30:30Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # 0003 — Lenguajes de script: POSIX sh, PowerShell 7 y Python en entorno virtual
@@ -61,3 +61,7 @@ Este ADR sustituye la fila «Dependencias» del ADR-0001 y la frase según la cu
 
 - `.gitignore` ignora `.venv/`, de modo que `list_files`, markdownlint y yamllint no lo recorren.
 - `scripts/check.sh` solo ejecuta scripts `sh`; shellcheck revisa los `.sh` de `scripts/` y los hooks.
+
+## Más información
+
+El entorno interactivo y la activación de `.venv/` se actualizan para Ubuntu (WSL) y Bash en el [ADR-0006](0006-entorno-wsl-ubuntu-bash.md).

@@ -7,7 +7,7 @@ category: architecture
 tags: [adr, idioma, entorno, agents, madr, dependencias]
 description: "Registra las decisiones previas a la construcción de la plantilla: idioma, entorno Windows/PowerShell, AGENTS.md como fuente única, MADR y ausencia de dependencias obligatorias."
 status: accepted
-updated_at: 2026-10-04T23:30:30Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # 0001 — Decisiones fundacionales de la plantilla
@@ -51,4 +51,4 @@ Se adoptan las cinco opciones elegidas de la tabla. Por coherencia con el entorn
 
 ## Más información
 
-El tema «Dependencias» y la regla de escribir todos los scripts en POSIX `sh` los sustituye el [ADR-0003](0003-scripting-languages.md). El resto de este ADR sigue vigente.
+El tema «Dependencias» y la regla de escribir todos los scripts en POSIX `sh` los sustituye el [ADR-0003](0003-scripting-languages.md). El tema «Entorno» lo sustituye el [ADR-0006](0006-entorno-wsl-ubuntu-bash.md). El resto de este ADR sigue vigente.

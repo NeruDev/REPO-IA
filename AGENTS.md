@@ -7,12 +7,12 @@ category: agentic
 tags: [agents, guardrails, reglas, verificacion]
 description: "Fuente única de reglas para agentes: rol, contexto, estilo, comandos de verificación, límites y uso de las bases teóricas externas."
 status: active
-updated_at: 2026-10-06T22:36:35Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # AGENTS.md
 
-Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u otros). Es la fuente única de reglas: [CLAUDE.md](CLAUDE.md) y [.github/copilot-instructions.md](.github/copilot-instructions.md) solo apuntan aquí. Si otra fuente contradice este archivo, prevalece este archivo y se avisa al usuario.
+Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u otros). Es la fuente única de reglas del repositorio: [CLAUDE.md](CLAUDE.md) y [.github/copilot-instructions.md](.github/copilot-instructions.md) solo apuntan aquí. Si otra fuente del repositorio contradice este archivo, prevalece este archivo y se avisa al usuario.
 
 ## Rol
 
@@ -22,7 +22,7 @@ Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u ot
 
 ## Contexto operativo
 
-- Sistema: Windows con PowerShell 7 como shell interactiva. La autoevaluación (`scripts/check.sh`, `scripts/checks/` y el hook) es POSIX `sh` y se ejecuta con el `sh` de Git para Windows. Las utilidades pueden usar también PowerShell 7 o Python dentro de `.venv/`, según [ADR-0003](docs/adr/0003-scripting-languages.md).
+- Sistema: Ubuntu (WSL) dentro de Windows 11 como anfitrión con Bash como shell base interactiva. La autoevaluación (`scripts/check.sh`, `scripts/checks/` y el hook) es POSIX `sh` y se ejecuta en el entorno de Ubuntu WSL. Las utilidades pueden usar también Python dentro de `.venv/`, según [ADR-0003](docs/adr/0003-scripting-languages.md) y [ADR-0006](docs/adr/0006-entorno-wsl-ubuntu-bash.md).
 - Idioma: documentación en español; nombres de archivo, identificadores y términos técnicos de uso común en inglés.
 - Estado: plantilla sin código de aplicación. `src/` está vacío; `tests/` contiene solo regresiones de la plantilla hasta elegir stack mediante un ADR.
 - Estructura y autoevaluación: [ARCHITECTURE.md](ARCHITECTURE.md). Decisiones vigentes: [docs/adr/](docs/adr/README.md). Procedimientos: [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -32,9 +32,8 @@ Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u ot
 
 - Formato: UTF-8 sin BOM, saltos LF, indentación de 2 espacios y línea final, según `.editorconfig` y `.gitattributes`.
 - Markdown: frontmatter según [ADR-0002](docs/adr/0002-frontmatter-schema.md) y enlaces internos relativos. Detalle en [markdown.instructions.md](.github/instructions/markdown.instructions.md).
-- Shell: POSIX `sh` sin bashismos y sin avisos de shellcheck. Detalle en [shell.instructions.md](.github/instructions/shell.instructions.md).
-- PowerShell: PowerShell 7 (`pwsh`), archivos `.ps1` en UTF-8 sin BOM.
-- Python: solo dentro del entorno virtual `.venv/` de la raíz, con las dependencias declaradas en un archivo versionado. Datos estructurados en JSON con 2 espacios.
+- Shell: Bash como shell interactiva en WSL; POSIX `sh` sin bashismos y sin avisos de shellcheck para autoevaluación y hooks. Detalle en [shell.instructions.md](.github/instructions/shell.instructions.md).
+- Python: solo dentro del entorno virtual `.venv/` de la raíz en Ubuntu WSL, con las dependencias declaradas en un archivo versionado. Datos estructurados en JSON con 2 espacios.
 - Commits: Conventional Commits, según [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Comandos de verificación
@@ -44,15 +43,16 @@ Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u ot
 | `sh scripts/check.sh` | Antes de dar por terminada cualquier tarea. Debe terminar con código 0. |
 | `sh -c 'CHECK_NO_NETWORK=1 sh scripts/check.sh'` | Sin red (omite lychee). Es lo que ejecuta el hook pre-commit. |
 | `sh -c 'CHECK_STRICT=1 sh scripts/check.sh'` | Para exigir que todos los linters estén instalados. |
+| `sh tests/sandbox.sh` | Al modificar el aislamiento efímero (`scripts/checks/sandbox.sh`, `scripts/sandbox-clean.sh`), el hook o la selección de archivos. |
 
 Ante un `ERROR`, corregir la causa indicada y repetir. Un `AVISO` no bloquea.
 
-Entorno virtual de Python, en PowerShell desde la raíz:
+Entorno virtual de Python, en Bash (Ubuntu WSL) desde la raíz:
 
 | Comando | Cuándo usarlo |
 | --- | --- |
-| `python -m venv .venv` | Una vez por clon, si `.venv/` no existe. |
-| `.\.venv\Scripts\Activate.ps1` | Al abrir cada terminal, antes de usar Python o herramientas instaladas en el entorno. |
+| `python3 -m venv .venv` | Una vez por clon, si `.venv/` no existe. |
+| `source .venv/bin/activate` | Al abrir cada terminal, antes de usar Python o herramientas instaladas en el entorno. |
 | `python -m pip install -r requirements.txt` | Con el entorno activo, para instalar las dependencias ya declaradas. |
 
 ## Límites

@@ -21,7 +21,7 @@ fi
 
 tracked=$(git -c core.quotepath=false ls-files --cached -- .) || exit 2
 prefix=$(git rev-parse --show-prefix) || exit 2
-pattern='(^|[^[:alnum:]_-])sandbox([/\\]|[^[:alnum:]_.-]|$)'
+pattern='(^|[^[:alnum:]_.-])(\.?\.?[/\\])?sandbox[/\\]|["'\''`]((\.?\.?[/\\])?sandbox)["'\''`]'
 while IFS= read -r path; do
   [ -n "$path" ] || continue
   case "$path" in sandbox/README.md | sandbox/.gitkeep) continue ;; esac

@@ -7,7 +7,7 @@ category: guides
 tags: [readme, plantilla, inicio-rapido]
 description: "Qué es esta plantilla, cómo instanciarla en un proyecto nuevo y qué pregunta responde cada documento."
 status: active
-updated_at: 2026-10-06T22:36:35Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # Repositorio base universal
@@ -16,7 +16,7 @@ Plantilla agnóstica del lenguaje para proyectos de un único desarrollador asis
 
 ## Inicio rápido
 
-Requisito: Git para Windows (aporta `sh`). PowerShell 7 y Python 3 son opcionales, según [ADR-0003](docs/adr/0003-scripting-languages.md). Los linters son opcionales; su instalación está en [CONTRIBUTING.md](CONTRIBUTING.md).
+Requisito: Ubuntu (WSL) sobre Windows 11 con Bash y Git (aporta `sh`). Python 3 es opcional, según [ADR-0003](docs/adr/0003-scripting-languages.md) y [ADR-0006](docs/adr/0006-entorno-wsl-ubuntu-bash.md). Los linters son opcionales; su instalación está en [CONTRIBUTING.md](CONTRIBUTING.md).
 
 1. Copiar la plantilla en la carpeta del proyecto e inicializar git: `git init -b main`.
 2. Activar el hook pre-commit desde `sh`: `chmod +x .githooks/pre-commit && git config core.hooksPath .githooks` (o la tarea de VS Code *hooks: activar*).

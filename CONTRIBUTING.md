@@ -7,7 +7,7 @@ category: guides
 tags: [contributing, git, commits, adr, frontmatter, memoria]
 description: "Procedimientos para hacer cambios, instalar los linters opcionales, crear documentos con frontmatter válido, generar ids, registrar ADRs y mantener la memoria del repositorio."
 status: active
-updated_at: 2026-10-06T22:36:35Z
+updated_at: 2026-10-10T22:30:00Z
 ---
 
 # Guía de contribución
@@ -29,7 +29,7 @@ Reglas en [sandbox/README.md](sandbox/README.md) y [ADR-0005](docs/adr/0005-ephe
 3. Mover (no copiar) al destino final, actualizar `file_path` si corresponde y repetir `sh scripts/check.sh`.
 4. Borrar la unidad propia; revisar `git status --short`. La limpieza colectiva usa `sh scripts/sandbox-clean.sh` (dry-run), `--yes` para borrar y `--older-than 7` para seleccionar unidades antiguas completas.
 
-El área temporal no se recorre por defecto. Las pruebas permanentes se ejecutan con `sh tests/sandbox.sh`; sus repositorios de prueba y registros usan el temporal del sistema y se eliminan con `trap`.
+El área temporal no se recorre por defecto. Las pruebas de regresión se ejecutan con `sh tests/sandbox.sh`; deben ejecutarse explícitamente al modificar el aislamiento efímero, el hook o la selección de archivos (no forman parte de cada chequeo ordinario). Sus repositorios de prueba y registros usan el temporal del sistema y se eliminan con `trap`.
 
 Abrir esta plantilla como carpeta de trabajo de VS Code para aplicar sus tareas y exclusiones. Las exclusiones no impiden abrir archivos ni su acceso explícito por un agente; no son una barrera de seguridad. El hook debe activarse en cada repo instanciado; no se cambia la configuración del Git contenedor.
 
@@ -37,12 +37,12 @@ Abrir esta plantilla como carpeta de trabajo de VS Code para aplicar sus tareas 
 
 Ninguno es obligatorio: si falta alguno, `scripts/check.sh` lo omite con un aviso.
 
-| Linter | Instalación en Windows | Requiere |
-| --- | --- | --- |
-| shellcheck | `scoop install shellcheck` | Scoop |
-| markdownlint-cli2 | `npm install -g markdownlint-cli2` | Node.js |
-| yamllint | `python -m pip install yamllint`, con `.venv/` activo | Python ([ADR-0003](docs/adr/0003-scripting-languages.md)) |
-| lychee | `scoop install lychee` | Scoop |
+| Linter | Instalación en Ubuntu (WSL) | Instalación en Windows | Requiere |
+| --- | --- | --- | --- |
+| shellcheck | `sudo apt install shellcheck` | `scoop install shellcheck` | apt / Scoop |
+| markdownlint-cli2 | `npm install -g markdownlint-cli2` | `npm install -g markdownlint-cli2` | Node.js |
+| yamllint | `python -m pip install yamllint` (con `.venv/` activo) o `sudo apt install yamllint` | `python -m pip install yamllint`, con `.venv/` activo | Python ([ADR-0003](docs/adr/0003-scripting-languages.md)) o apt |
+| lychee | Descargar binario de GitHub release o `cargo install lychee` | `scoop install lychee` | Binario / Cargo / Scoop |
 
 ## Crear un documento
 
@@ -68,7 +68,27 @@ Ninguno es obligatorio: si falta alguno, `scripts/check.sh` lo omite con un avis
 
 ## Generar un id
 
-Los `id` son TypeID: un prefijo (`doc` para documentos, `adr` para ADRs), `_` y un UUIDv7 en Crockford Base32. Se generan una vez y no cambian. En PowerShell:
+Los `id` son TypeID: un prefijo (`doc` para documentos, `adr` para ADRs), `_` y un UUIDv7 en Crockford Base32. Se generan una vez y no cambian. En Bash (Python 3 estándar sin dependencias añadidas):
+
+```bash
+python3 -c '
+import secrets, time
+alfabeto = "0123456789abcdefghjkmnpqrstvwxyz"
+b = bytearray(secrets.token_bytes(16))
+ms = int(time.time() * 1000)
+for i in range(6): b[i] = (ms >> (8 * (5 - i))) & 0xFF
+b[6] = 0x70 | (b[6] & 0x0F)
+b[8] = 0x80 | (b[8] & 0x3F)
+bits = "00" + "".join(f"{x:08b}" for x in b)
+print("doc_" + "".join(alfabeto[int(bits[5*i:5*i+5], 2)] for i in range(26)))
+'
+```
+
+Para un ADR, cambiar el prefijo `"doc_"` por `"adr_"`.
+
+Para obtener la fecha de `updated_at` en UTC desde Bash: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
+
+En PowerShell (Windows):
 
 ```powershell
 $prefijo = 'doc'
@@ -83,7 +103,7 @@ $bits = '00' + (-join ($b | ForEach-Object { [Convert]::ToString($_, 2).PadLeft(
 "${prefijo}_" + (-join (0..25 | ForEach-Object { $alfabeto[[Convert]::ToInt32($bits.Substring(5 * $_, 5), 2)] }))
 ```
 
-Para obtener la fecha de `updated_at` en UTC: `(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')`.
+Para obtener la fecha de `updated_at` en UTC desde PowerShell: `(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')`.
 
 ## Registrar un ADR
 

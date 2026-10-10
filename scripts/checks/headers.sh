@@ -43,6 +43,15 @@ function inset(x, list,   n, a, i) {
   for (i = 1; i <= n; i++) if (a[i] == x) return 1
   return 0
 }
+function okdatetime(s,   y, m, d, hh, mm, ss, ml) {
+  if (s !~ /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z$/) return 0
+  y = substr(s, 1, 4) + 0; m = substr(s, 6, 2) + 0; d = substr(s, 9, 2) + 0
+  hh = substr(s, 12, 2) + 0; mm = substr(s, 15, 2) + 0; ss = substr(s, 18, 2) + 0
+  if (m < 1 || m > 12 || d < 1 || hh < 0 || hh > 23 || mm < 0 || mm > 59 || ss < 0 || ss > 59) return 0
+  if (m == 2) ml = ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0) ? 29 : 28
+  else ml = (m == 4 || m == 6 || m == 9 || m == 11) ? 30 : 31
+  return d <= ml
+}
 BEGIN { st = 0; closed = 0; fence = ""; nk = 0 }
 NR == 1 {
   if ($0 == "---") { st = 1; next }
@@ -123,7 +132,7 @@ END {
         e("status de ADR \"" s "\" inválido (proposed, accepted, rejected, deprecated, superseded by NNNN)")
     } else if (!inset(s, "draft active deprecated archived")) e("status \"" s "\" inválido (draft, active, deprecated, archived)")
   }
-  if (v["updated_at"] != "" && v["updated_at"] !~ /^[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]Z$/)
+  if (v["updated_at"] != "" && !okdatetime(v["updated_at"]))
     e("updated_at debe ser ISO 8601 UTC: AAAA-MM-DDTHH:MM:SSZ")
 
   if ("agent_visibility" in v && !inset(v["agent_visibility"], "public internal restricted")) e("agent_visibility inválido")

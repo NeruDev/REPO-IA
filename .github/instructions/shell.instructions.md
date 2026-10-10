@@ -5,8 +5,8 @@ applyTo: "**/*.sh,.githooks/**"
 
 # Reglas para scripts de shell
 
-- POSIX `sh` con `#!/bin/sh`, sin bashismos (`[[ ]]`, arrays, `local`, `source`, `pipefail`). PowerShell y Python siguen el [ADR-0003](../../docs/adr/0003-scripting-languages.md).
-- Cada chequeo se sitúa en la raíz del repo con `cd "$(dirname "$0")/../.."` y usa rutas relativas con `/`.
+- POSIX `sh` con `#!/bin/sh`, sin bashismos (`[[ ]]`, arrays, `local`, `source`, `pipefail`) para autoevaluación y hooks. La shell interactiva y utilidades siguen el [ADR-0003](../../docs/adr/0003-scripting-languages.md) y el [ADR-0006](../../docs/adr/0006-entorno-wsl-ubuntu-bash.md).
+- Cada chequeo de `scripts/checks/` se sitúa en la raíz del repo con `cd "$(dirname "$0")/../.."` y usa rutas relativas con `/`; otros scripts o hooks ajustan la ruta relativa según su ubicación (por ejemplo, `cd "$(dirname "$0")/.."` en `scripts/`).
 - Usar `set -u` y comprobar los errores explícitamente. Códigos de salida: 0 éxito, 1 fallo de chequeo, 2 error de entorno.
 - Informar con `err`, `warn` e `info` de `scripts/lib/common.sh`, indicando el archivo y la causa.
 - Deterministas e idempotentes: sin red (salvo lychee), sin modificar archivos y sin depender de la hora, salvo la excepción de fechas siguiente.

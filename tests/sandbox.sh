@@ -125,7 +125,9 @@ ok 'edad considera todo el subárbol'
 passes 'antigüedad es aviso, no fallo' sh scripts/check.sh
 grep -q 'AVISO.*más de 7' "$work/log" || stop 'no se emitió el aviso de antigüedad'
 passes '--yes borra solo unidades antiguas' sh scripts/sandbox-clean.sh --yes --older-than 7
-[ ! -e sandbox/20260901-old ] && [ -f sandbox/20260901-mixed/output.txt ] || stop 'selección por edad incorrecta'
+if [ -e sandbox/20260901-old ] || [ ! -f sandbox/20260901-mixed/output.txt ]; then
+  stop 'selección por edad incorrecta'
+fi
 ok 'limpieza selectiva conserva trabajo reciente'
 passes 'avisa de un descendiente antiguo aunque la unidad sea reciente' sh scripts/check.sh
 grep -q 'AVISO.*más de 7' "$work/log" || stop 'no avisó del descendiente antiguo'
@@ -139,7 +141,9 @@ make_link "$work/outside" sandbox/escape || stop 'no se pudo crear un enlace rea
 [ -L sandbox/escape ] || stop 'ln no produjo un enlace simbólico real'
 rejects 'rechaza enlace simbólico hacia fuera (dry-run)' sh scripts/sandbox-clean.sh
 rejects 'rechaza enlace simbólico hacia fuera (--yes)' sh scripts/sandbox-clean.sh --yes
-[ -f "$work/outside/keep" ] && [ -f sandbox/20261006-test/nested/output.txt ] || stop 'se borró algo antes del rechazo'
+if [ ! -f "$work/outside/keep" ] || [ ! -f sandbox/20261006-test/nested/output.txt ]; then
+  stop 'se borró algo antes del rechazo'
+fi
 ok 'rechazo es previo a cualquier borrado; exterior intacto'
 rm sandbox/escape
 mv sandbox "$work/area"
@@ -151,7 +155,9 @@ mkdir 'sandbox/20261006-con espacios' sandbox/.hidden
 printf 'dato\n' >'sandbox/20261006-con espacios/a [1].txt'
 passes 'limpieza completa incluye ocultos y espacios' sh scripts/sandbox-clean.sh --yes
 [ "$(command -p find sandbox -type f | wc -l)" -eq 2 ] || stop 'quedaron temporales'
-[ -f sandbox/README.md ] && [ -f sandbox/.gitkeep ] || stop 'se borraron controles'
+if [ ! -f sandbox/README.md ] || [ ! -f sandbox/.gitkeep ]; then
+  stop 'se borraron controles'
+fi
 ok 'solo quedan README.md y .gitkeep'
 passes 'check.sh final' sh scripts/check.sh
 [ -z "$(git status --short)" ] || stop 'fixture no quedó limpio'
