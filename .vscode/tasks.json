@@ -1,0 +1,42 @@
+{
+  // Tareas de autoevaluación. Ejecutar con "Tasks: Run Test Task" o "Tasks: Run Task".
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "check: completo",
+      "detail": "sh scripts/check.sh (incluye URLs externas con lychee)",
+      "type": "process",
+      "command": "sh",
+      "args": ["scripts/check.sh"],
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "check: sin red",
+      "detail": "Igual que el pre-commit: omite lychee",
+      "type": "process",
+      "command": "sh",
+      "args": ["scripts/check.sh"],
+      "options": { "env": { "CHECK_NO_NETWORK": "1" } },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "sandbox: limpieza (dry-run)",
+      "detail": "Lista unidades de trabajo; no borra nada",
+      "type": "process",
+      "command": "sh",
+      "args": ["scripts/sandbox-clean.sh"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "hooks: activar",
+      "detail": "Dar permiso de ejecución al hook y activarlo en el repo instanciado",
+      "type": "process",
+      "command": "sh",
+      "args": ["-c", "chmod +x .githooks/pre-commit && git config core.hooksPath .githooks"],
+      "problemMatcher": []
+    }
+  ]
+}

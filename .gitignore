@@ -1,64 +1,28 @@
-# === ESTANDARES DEL SISTEMA OPERATIVO (WINDOWS) ===
-# Archivos temporales de sistema y miniaturas
+# Configuración local de las bases teóricas externas (plantilla: config/external-bases.example)
+config/external-bases.local
+
+# Variables de entorno locales y secretos
+.env
+.env.*
+
+# Archivos del sistema operativo
 Thumbs.db
 desktop.ini
-$RECYCLE.BIN/
+.DS_Store
 
-# === ENTORNOS VIRTUALES Y PYTHON ===
-# Cache de Python y archivos compilados
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Entornos virtuales (venv)
+# Entorno virtual de Python (ADR-0003)
 .venv/
-venv/
-ENV/
-env/
-bin/
-lib/
-include/
+__pycache__/
 
-# Distribucion y empaquetado
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-
-# === HERRAMIENTAS DE EDICION Y LENGUAJE ===
-# VS Code
+# Editor: solo se versionan las tareas y exclusiones compartidas
 .vscode/*
-!.vscode/settings.json
 !.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+!.vscode/settings.json
 
-# Obsidian (Ajustes locales y sincronizacion)
-.obsidian/workspace
-.obsidian/workspace.json
+# Biblioteca de chequeos: neutraliza lib/ si la plantilla vive en un repo Python
+!/scripts/lib/
 
-# Jupyter Notebooks (comun en proyectos de IA)
-.ipynb_checkpoints
-
-# === SEGURIDAD Y DATOS ===
-# Archivos de entorno y secretos
-.env
-.venv
-secrets.json
-
-# Datos temporales o de salida (JSON)
-data/output/
-data/temp/
-*.log
-
-# === ARCHIVOS DE RESPALDO ===
-*.bak
-*.swp
-*~
+# Trabajo efímero: únicamente los dos archivos de control se versionan
+/sandbox/*
+!/sandbox/README.md
+!/sandbox/.gitkeep

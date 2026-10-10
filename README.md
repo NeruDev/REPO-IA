@@ -1,163 +1,39 @@
-# 🚀 <project_name>
-
-Breve descripcion del proyecto. Explica en 1–2 lineas:
-- Qué hace
-- Para quién es
-- Qué problema resuelve
-
+---
+id: doc_01m44g0zphee3bmyg1n11yaf68
+name: readme
+title: "Repositorio base universal"
+file_path: README.md
+category: guides
+tags: [readme, plantilla, inicio-rapido]
+description: "Qué es esta plantilla, cómo instanciarla en un proyecto nuevo y qué pregunta responde cada documento."
+status: active
+updated_at: 2026-10-06T22:36:35Z
 ---
 
-## 📌 Tabla de Contenidos
+# Repositorio base universal
 
-- [Descripcion](#-descripcion)
-- [Caracteristicas](#-caracteristicas)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Requisitos](#-requisitos)
-- [Instalacion](#-instalacion)
-- [Uso](#-uso)
-- [Configuracion](#-configuracion)
-- [Contribucion](#-contribucion)
-- [Licencia](#-licencia)
+Plantilla agnóstica del lenguaje para proyectos de un único desarrollador asistido por agentes de IA. Aplica *Documentation-as-Code*: cada documento tiene una cabecera verificable, los enlaces se comprueban, las decisiones quedan registradas y todo se valida con un solo comando.
 
----
+## Inicio rápido
 
-## 📖 Descripcion
+Requisito: Git para Windows (aporta `sh`). PowerShell 7 y Python 3 son opcionales, según [ADR-0003](docs/adr/0003-scripting-languages.md). Los linters son opcionales; su instalación está en [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Descripcion mas detallada del proyecto.
+1. Copiar la plantilla en la carpeta del proyecto e inicializar git: `git init -b main`.
+2. Activar el hook pre-commit desde `sh`: `chmod +x .githooks/pre-commit && git config core.hooksPath .githooks` (o la tarea de VS Code *hooks: activar*).
+3. Opcional: configurar las bases teóricas externas copiando `config/external-bases.example` a `config/external-bases.local` y completando la ruta, o definiendo la variable de entorno `EXTERNAL_BASES_DIR`. Las reglas de uso están en [AGENTS.md](AGENTS.md).
+4. Ejecutar la autoevaluación: `sh scripts/check.sh` (o la tarea *check: completo*). Debe terminar con código 0.
+5. Adaptar al proyecto: elegir licencia y añadir `LICENSE`, reescribir este README y registrar el stack elegido en un ADR nuevo.
 
-Incluye:
-- Contexto
-- Objetivo
-- Alcance
+## Mapa de documentación
 
----
-
-## ✨ Caracteristicas
-
-- Caracteristica 1
-- Caracteristica 2
-- Caracteristica 3
-
----
-
-## 📂 Estructura del Proyecto
-
-```text
-<project_root>/
-├── src/            # Codigo fuente principal
-├── docs/           # Documentacion adicional
-├── tests/          # Pruebas
-├── config/         # Archivos de configuracion
-├── scripts/        # Automatizacion
-└── README.md
-````
-
----
-
-## ⚙️ Requisitos
-
-Lista de dependencias necesarias para ejecutar el proyecto:
-
-* Lenguaje: <lenguaje> <version>
-* Sistema operativo: <opcional>
-* Dependencias:
-
-  * <dependencia_1>
-  * <dependencia_2>
-
----
-
-## 🚀 Instalacion
-
-### Metodo general
-
-```bash
-git clone <repo_url>
-cd <project_name>
-```
-
-### Dependencias
-
-```bash
-<command_to_install_dependencies>
-```
-
----
-
-## ▶️ Uso
-
-Ejemplo basico de ejecucion:
-
-```bash
-<comando_principal>
-```
-
-Ejemplo de uso:
-
-```text
-<entrada> -> <salida>
-```
-
----
-
-## ⚙️ Configuracion
-
-Opciones de configuracion disponibles:
-
-| Parametro | Descripcion   | Valor por defecto |
-| --------- | ------------- | ----------------- |
-| <param_1> | <descripcion> | <valor>           |
-| <param_2> | <descripcion> | <valor>           |
-
----
-
-## 🧪 Testing
-
-```bash
-<comando_para_tests>
-```
-
----
-
-## 🤝 Contribucion
-
-Pasos para contribuir:
-
-1. Fork del repositorio
-2. Crear una rama (`feature/<nombre>`)
-3. Commit de cambios
-4. Push a la rama
-5. Crear Pull Request
-
----
-
-## 📚 Documentacion
-
-Documentacion adicional:
-
-* [Guia de arquitectura](ARCHITECTURE.md)
-* [Normas de agentes](AGENTS.md)
-
----
-
-## ⚠️ Estado del Proyecto
-
-* Estado: <activo | en desarrollo | mantenido | deprecado>
-* Version: <version_actual>
-
----
-
-## 📄 Licencia
-
-Este proyecto se distribuye bajo la licencia <tipo_de_licencia>.
-Consulte el archivo `LICENSE` para mas informacion.
-
----
-
-## 👤 Autor / Contacto
-
-* Autor: <nombre>
-* Email: <email>
-* Proyecto: <url>
-
----
+| Documento | Pregunta que responde |
+| --- | --- |
+| [README.md](README.md) | ¿Qué es y cómo empiezo? |
+| [AGENTS.md](AGENTS.md) | ¿Cómo debe trabajar un agente de IA aquí? Es la fuente única de reglas. |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | ¿Cómo está organizado el repositorio y cómo funciona la autoevaluación? |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | ¿Cómo hago un cambio, un documento nuevo o un ADR? |
+| [docs/adr/](docs/adr/README.md) | ¿Por qué se decidió así? |
+| [docs/memory/](docs/memory/README.md) | ¿Qué errores y lecciones ya se aprendieron aquí? |
+| [sandbox/README.md](sandbox/README.md) | ¿Dónde va lo efímero y cómo se promueve o elimina? |
+| [.github/instructions/](.github/instructions/) | Reglas por tipo de archivo para GitHub Copilot. |
+| [CLAUDE.md](CLAUDE.md), [.github/copilot-instructions.md](.github/copilot-instructions.md) | Adaptadores que solo apuntan a AGENTS.md. |

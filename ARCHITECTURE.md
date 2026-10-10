@@ -1,80 +1,102 @@
-# ARCHITECTURE.md: Diseño y Estructura del Sistema
-
-Este documento define los pilares arquitectónicos y la organización lógica del repositorio. Su función es servir como guía de referencia para mantener la integridad del sistema durante su evolución.
-
+---
+id: doc_01m44g0zxgemmatvdssy407d0r
+name: architecture
+title: "Arquitectura del repositorio base"
+file_path: ARCHITECTURE.md
+category: architecture
+tags: [architecture, estructura, autoevaluacion, linters]
+description: "Estructura de carpetas, reparto de responsabilidades entre scripts propios y linters, y resolución de las bases teóricas externas."
+status: active
+updated_at: 2026-10-06T22:36:35Z
 ---
 
-## 1. Reglas Generales de Arquitectura
+# Arquitectura
 
-Todo componente integrado en este repositorio debe cumplir con los siguientes principios de diseño:
+El repositorio tiene tres piezas: documentación por capas (cada archivo responde una sola pregunta, ver [README.md](README.md)), una autoevaluación determinista con un único punto de entrada y una configuración local que apunta a las bases teóricas externas.
 
-1.  **Modularidad Estricta:** Las funcionalidades deben estar aisladas. Un cambio en la lógica de un agente o script no debe comprometer la integridad de los demás módulos.
-2.  **Documentación de Decisiones (ADR):** Cualquier cambio estructural debe estar justificado por un registro de decisión que explique el "por qué" y no solo el "qué".
-3.  **Idempotencia:** Las operaciones de automatización y procesamiento de datos deben producir el mismo resultado independientemente de cuántas veces se ejecuten.
-4.  **Nomenclatura Estandarizada:** Se aplica el formato `snake_case` para todo elemento del sistema de archivos, omitiendo el uso de acentos para garantizar la compatibilidad en entornos de terminal.
-5.  **Desacoplamiento de IAs:** Los modelos de lenguaje se tratan como componentes intercambiables; el sistema no debe depender de una sola interfaz para su funcionamiento core.
+## Estructura de carpetas
 
----
-
-## 2. Estructura del Repositorio
-
-La siguiente jerarquía representa la organización de carpetas y su propósito dentro del proyecto:
-
-```yaml
-mapa_del_repositorio:
-  assets/: "Recursos estaticos como imagenes, diagramas y archivos multimedia"
-  config/: "Archivos de configuracion global, esquemas JSON y variables de entorno"
-  data/: "Conjuntos de datos, archivos JSON de entrada/salida y registros locales"
-  docs/: "Documentacion tecnica, guias de usuario y notas en formato Markdown"
-  scripts/: "Scripts de automatizacion en Python y herramientas de utilidad para la terminal"
-  src/: "Codigo fuente principal organizado por modulos logicos"
-  templates/: "Plantillas base para la generacion de agentes, prompts y documentos"
-  tests/: "Scripts de validacion para asegurar la integridad de datos y codigo"
+```text
+.
+├── AGENTS.md                       Contrato para agentes (fuente única de reglas)
+├── ARCHITECTURE.md                 Este documento
+├── CLAUDE.md                       Adaptador: importa AGENTS.md
+├── CONTRIBUTING.md                 Procedimientos de cambio
+├── README.md                       Entrada al proyecto
+├── .editorconfig                   Formato común para editores
+├── .gitattributes                  Normalización a LF
+├── .gitignore                      Exclusiones (incluye la configuración local)
+├── .markdownlint-cli2.jsonc        Configuración de markdownlint-cli2
+├── .yamllint.yaml                  Configuración de yamllint
+├── .githooks/pre-commit            Hook: autoevaluación sin red
+├── .github/
+│   ├── copilot-instructions.md     Adaptador: apunta a AGENTS.md
+│   └── instructions/               Reglas por ruta para Copilot (*.instructions.md)
+├── .vscode/tasks.json              Tareas de VS Code
+├── .vscode/settings.json           Exclusiones de búsqueda y observador
+├── config/
+│   └── external-bases.example      Plantilla de la configuración local (versionada)
+├── docs/
+│   ├── adr/                        ADR en formato MADR e índice README.md
+│   └── memory/                     Memoria del repositorio: índice README.md y entries.md
+├── scripts/
+│   ├── check.sh                    Punto de entrada único de la autoevaluación
+│   ├── sandbox-clean.sh            Limpieza explícita, dry-run por defecto
+│   ├── checks/                     Un script por invariante del repositorio
+│   └── lib/common.sh               Utilidades compartidas por los chequeos
+├── src/                            Código del proyecto (vacío en la plantilla)
+├── tests/                          Regresión del aislamiento; sin pruebas de aplicación
+├── sandbox/                        Trabajo efímero ignorado, salvo dos controles
+└── .venv/                          Entorno virtual de Python (local, ignorado por git)
 ```
 
----
+La autoevaluación es POSIX `sh`; las utilidades pueden usar PowerShell 7 o Python dentro de `.venv/` ([ADR-0003](docs/adr/0003-scripting-languages.md)).
 
-## 3. Flujo de Datos y Operación
+## Autoevaluación
 
-El siguiente diagrama describe el tránsito de la información desde la entrada del usuario hasta la persistencia en el sistema de archivos:
+`scripts/check.sh` ejecuta primero los chequeos propios y después los linters. Termina con código 0 solo si no hay fallos.
 
 ```mermaid
-flowchart TD
-    User([Usuario]) --> Input[Entrada de Requerimiento]
-    Input --> Router{Selección de IA}
-    
-    Router --> Copilot[GitHub Copilot]
-    Router --> Claude[Claude]
-    Router --> Gemini[Gemini CLI]
-    
-    Copilot --> Proposal[Propuesta de Cambio]
-    Claude --> Proposal
-    Gemini --> Proposal
-    
-    Proposal --> Validation{Validación de Reglas}
-    
-    Validation -->|Rechazado| Proposal
-    Validation -->|Aprobado| Write[Escritura en Disco]
-    
-    Write --> Storage[(Sistema de Archivos)]
-    Storage --> Sync[Sincronización de Estado]
-    Sync --> Feedback([Confirmación Final])
+flowchart LR
+    T["Terminal / tarea de VS Code"] --> C["scripts/check.sh"]
+    H[".githooks/pre-commit<br/>CHECK_NO_NETWORK=1"] --> C
+    C --> I["scripts/checks/*.sh<br/>invariantes del repo"]
+    C --> L["Linters opcionales<br/>sintaxis y estilo"]
+    I --> R["Resumen y código de salida"]
+    L --> R
 ```
 
----
+Cada comprobación tiene un solo responsable:
 
-## 4. Secciones Obligatorias para Proyectos Derivados
+| Comprobación | Responsable | Qué valida |
+| --- | --- | --- |
+| Archivos obligatorios | `scripts/checks/required-files.sh` | Existencia y contenido de la lista de archivos obligatorios. La lista está en el script. |
+| Cabeceras y secciones | `scripts/checks/headers.sh` | Esquema de frontmatter de [ADR-0002](docs/adr/0002-frontmatter-schema.md), unicidad de `id`, coherencia de `name` y `file_path`, y secciones obligatorias por archivo. |
+| Numeración de ADRs | `scripts/checks/adr-numbering.sh` | Nombres `NNNN-titulo.md`, secuencia desde 0001 sin huecos ni duplicados, y presencia en el índice. |
+| Enlaces internos | `scripts/checks/internal-links.sh` | Que los destinos relativos existan; rechaza rutas absolutas. |
+| Memoria del repositorio | `scripts/checks/memory.sh` | Presupuestos de [ADR-0004](docs/adr/0004-repository-memory.md), esquema y orden de los campos, ids únicos, coherencia entre índice y entradas, evidencia como ruta o commit, sin rutas absolutas ni tokens, y avisos de consolidación y caducidad. |
+| Configuración externa | `scripts/checks/external-config.sh` | Que el archivo local esté ignorado y sin versionar, y que la ruta configurada exista, sea legible y esté fuera del repo. |
+| Aislamiento efímero | `scripts/checks/sandbox.sh` | Índice y referencias operativas (incluidas las preparadas), reglas efectivas de Git, evidencia durable y avisos de antigüedad y tamaño. |
+| Shell | shellcheck | Archivos `.sh` y hooks seleccionados, en modo `sh`. |
+| Markdown | markdownlint-cli2 | Estilo y anclas `#` dentro del mismo archivo. |
+| YAML | yamllint | Sintaxis de los `.yaml` y del frontmatter de cada `.md`. |
+| Enlaces externos | lychee | URLs `http`/`https`. Se omite con `CHECK_NO_NETWORK=1`. |
 
-Para asegurar la consistencia, todo proyecto basado en esta plantilla debe incluir en su arquitectura:
+Comportamiento:
 
-* **Visión General:** Resumen ejecutivo de la solución.
-* **Pila Tecnológica:** Listado de herramientas, lenguajes y versiones.
-* **Diagramas de Secuencia:** Para procesos que involucren múltiples pasos de procesamiento.
-* **Análisis de Riesgos:** [SECCIÓN PARA EDICIÓN FUTURA POR IA AGÉNTICA] Identificación de puntos críticos donde la IA podría fallar o alucinar.
-* **Registro de Decisiones Arquitectónicas (ADR):** Bitácora cronológica de cambios en el diseño.
+- Si un linter no está instalado, se emite un `AVISO` con el comando de instalación y se omite. Con `CHECK_STRICT=1` cuenta como fallo.
+- Sin bases externas configuradas solo hay un `AVISO`, para que un clon recién creado pase el chequeo.
+- `list_files` excluye el área efímera por defecto; `sh scripts/check.sh RUTA ...` añade rutas explícitas para promoción, con las mismas reglas de los linters y de documentación.
+- Límites conocidos: no se validan las anclas hacia otros archivos (`otro.md#seccion`). El aislamiento revisa tanto índice como copia de trabajo; los demás chequeos revisan la copia de trabajo.
+- El análisis de dependencias es estático: detecta el nombre literal de la zona en archivos operativos, no rutas construidas dinámicamente. Las menciones Markdown son documentales, no autorizan dependencias de ejecución.
+- La limpieza exige raíz de plantilla, rechaza enlaces y solo borra unidades inmediatas completas; sin escrituras concurrentes. Detalles y excepciones en [ADR-0005](docs/adr/0005-ephemeral-workspace.md).
 
----
+## Bases teóricas externas
 
-## 5. Mantenimiento de la Arquitectura
+La ruta se resuelve en este orden:
 
-Este archivo no es estático. Se debe revisar al finalizar cada fase de desarrollo para asegurar que la representación gráfica (Mermaid) y el mapa de directorios (YAML) reflejan la realidad actual del repositorio.
+1. Variable de entorno `EXTERNAL_BASES_DIR`.
+2. Clave `EXTERNAL_BASES_DIR` en `config/external-bases.local`, que está ignorado por git. Se lee como datos y no se ejecuta.
+3. Ninguna: queda sin configurar y se emite un aviso.
+
+Las reglas de uso por parte de los agentes están en [AGENTS.md](AGENTS.md). Las decisiones que justifican esta estructura están en [docs/adr/](docs/adr/README.md).
