@@ -7,18 +7,18 @@ category: guides
 tags: [contributing, git, commits, adr, frontmatter, memoria]
 description: "Procedimientos para hacer cambios, instalar los linters opcionales, crear documentos con frontmatter válido, generar ids, registrar ADRs y mantener la memoria del repositorio."
 status: active
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T01:36:31Z
 ---
 
 # Guía de contribución
 
 ## Flujo de trabajo
 
-1. Hacer el cambio junto con la documentación afectada, y actualizar `updated_at` en cada `.md` modificado.
+1. Hacer el cambio junto con la documentación afectada, y actualizar `updated_at` en cada `.md` modificado con `sh scripts/now.sh stamp RUTA ...`.
 2. Ejecutar `sh scripts/check.sh` y corregir hasta que termine con código 0.
 3. Hacer commit con [Conventional Commits](https://www.conventionalcommits.org/): `tipo(ámbito opcional): descripción`. Tipos habituales: `feat`, `fix`, `docs`, `refactor`, `test`, `build`, `ci` y `chore`.
 
-El hook pre-commit repite la autoevaluación sin red. Se activa una vez por clon desde `sh` con `chmod +x .githooks/pre-commit && git config core.hooksPath .githooks` (o la tarea *hooks: activar*). El permiso es necesario en sistemas POSIX.
+El hook pre-commit repite la autoevaluación sin red. Se activa una vez por clon desde `sh` con `chmod +x .githooks/pre-commit && git config core.hooksPath .githooks` (o la tarea *hooks: activar*, o `sh scripts/setup.sh`, que además monta el entorno). El permiso es necesario en sistemas POSIX.
 
 ## Trabajo efímero y promoción
 
@@ -35,14 +35,14 @@ Abrir esta plantilla como carpeta de trabajo de VS Code para aplicar sus tareas 
 
 ## Linters opcionales
 
-Ninguno es obligatorio: si falta alguno, `scripts/check.sh` lo omite con un aviso.
+Ninguno es obligatorio: si falta alguno, `scripts/check.sh` lo omite con un aviso. Las versiones fijadas se declaran en [config/toolchain.env](config/toolchain.env) y las aplica `sh scripts/setup.sh`; la instalación completa desde cero está en [docs/setup.md](docs/setup.md).
 
-| Linter | Instalación en Ubuntu (WSL) | Instalación en Windows | Requiere |
+| Linter | Instalación en Ubuntu (WSL), entorno canónico | Alternativa en Windows nativo | Requiere |
 | --- | --- | --- | --- |
 | shellcheck | `sudo apt install shellcheck` | `scoop install shellcheck` | apt / Scoop |
-| markdownlint-cli2 | `npm install -g markdownlint-cli2` | `npm install -g markdownlint-cli2` | Node.js |
-| yamllint | `python -m pip install yamllint` (con `.venv/` activo) o `sudo apt install yamllint` | `python -m pip install yamllint`, con `.venv/` activo | Python ([ADR-0003](docs/adr/0003-scripting-languages.md)) o apt |
-| lychee | Descargar binario de GitHub release o `cargo install lychee` | `scoop install lychee` | Binario / Cargo / Scoop |
+| markdownlint-cli2 | `npm install -g markdownlint-cli2@<según toolchain.env>` | `npm install -g markdownlint-cli2@<según toolchain.env>` | Node.js |
+| yamllint | `python -m pip install .`, con `.venv/` activo | igual, activando `.\.venv\Scripts\Activate.ps1` | Python ([ADR-0003](docs/adr/0003-scripting-languages.md)) |
+| lychee | Binario de [releases](https://github.com/lycheeverse/lychee/releases) o `cargo install lychee` | `scoop install lychee` | Binario / Cargo / Scoop |
 
 ## Crear un documento
 
@@ -68,7 +68,7 @@ Ninguno es obligatorio: si falta alguno, `scripts/check.sh` lo omite con un avis
 
 ## Generar un id
 
-Los `id` son TypeID: un prefijo (`doc` para documentos, `adr` para ADRs), `_` y un UUIDv7 en Crockford Base32. Se generan una vez y no cambian. En Bash (Python 3 estándar sin dependencias añadidas):
+Los `id` son TypeID: un prefijo (`doc` para documentos, `adr` para ADRs), `_` y un UUIDv7 en Crockford Base32. Se generan una vez y no cambian. En la plantilla, `sh scripts/new-id.sh` (o `sh scripts/new-id.sh adr`) lo emite directamente; requiere Python 3. El algoritmo, por si no se dispone del script, en Bash (Python 3 estándar sin dependencias añadidas):
 
 ```bash
 python3 -c '
@@ -86,7 +86,7 @@ print("doc_" + "".join(alfabeto[int(bits[5*i:5*i+5], 2)] for i in range(26)))
 
 Para un ADR, cambiar el prefijo `"doc_"` por `"adr_"`.
 
-Para obtener la fecha de `updated_at` en UTC desde Bash: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
+Para obtener la fecha de `updated_at` en UTC desde el reloj del sistema, `sh scripts/now.sh`; `sh scripts/now.sh stamp RUTA ...` la escribe en el frontmatter de los `.md` indicados, y `sh scripts/now.sh date` emite `AAAA-MM-DD` (memoria, `CHECK_TODAY`) o `sh scripts/now.sh compact` `AAAAMMDD` (carpetas `sandbox/`). Sin el script, en Bash: `date -u +"%Y-%m-%dT%H:%M:%SZ"`.
 
 En PowerShell (Windows):
 
@@ -152,7 +152,7 @@ Añadir el bloque al final de `docs/memory/entries.md`, separado por una línea 
 | `evidencia` | Enlace relativo a un archivo final versionado o `commit <hash>`; nunca una copia, URL ni ruta de trabajo efímero. |
 | `estado` | `activa`; `promovida` u `obsoleta` solo mientras el borrado está pendiente. |
 | `recurrencias` | Veces observado, entero mayor o igual que 1. |
-| `fecha` | Última confirmación (alta, recurrencia o revisión), en AAAA-MM-DD. La fecha de alta la conserva git. |
+| `fecha` | Última confirmación (alta, recurrencia o revisión), en AAAA-MM-DD (`sh scripts/now.sh date`). La fecha de alta la conserva git. |
 | `origen` | `comprobado` (reproducido), `usuario`, `documentación` o `inferido` (sin comprobar). |
 | `vence` | Opcional, al final de la última línea: `; vence: AAAA-MM-DD`. Para lecciones atadas a una versión de una herramienta. |
 

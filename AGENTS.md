@@ -7,7 +7,7 @@ category: agentic
 tags: [agents, guardrails, reglas, verificacion]
 description: "Fuente única de reglas para agentes: rol, contexto, estilo, comandos de verificación, límites y uso de las bases teóricas externas."
 status: active
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T01:36:31Z
 ---
 
 # AGENTS.md
@@ -32,8 +32,10 @@ Contrato operativo para cualquier agente de IA (GitHub Copilot, Claude Code u ot
 
 - Formato: UTF-8 sin BOM, saltos LF, indentación de 2 espacios y línea final, según `.editorconfig` y `.gitattributes`.
 - Markdown: frontmatter según [ADR-0002](docs/adr/0002-frontmatter-schema.md) y enlaces internos relativos. Detalle en [markdown.instructions.md](.github/instructions/markdown.instructions.md).
+- Fechas: el reloj del sistema es la única fuente; nunca una búsqueda web ni una fecha estimada. Cada vez que se modifique un `.md` con `updated_at`, ejecutar `sh scripts/now.sh stamp RUTA ...` para grabarlo (no aplica a adaptadores ni a `*.instructions.md`). Formatos sueltos: `sh scripts/now.sh` emite `AAAA-MM-DDTHH:MM:SSZ`, `sh scripts/now.sh date` `AAAA-MM-DD` (memoria y `CHECK_TODAY`) y `sh scripts/now.sh compact` `AAAAMMDD` (unidades `sandbox/`).
+- Diagramas: la información estructurada en pasos o métodos (árboles de directorios, flujos de trabajo, diagramas de flujo, etc.) se representa en Mermaid o YAML dentro de los `.md`, según convenga a la presentación, y nunca en diagramas ASCII, que los modelos agenticos de IA tienden a malinterpretar. Detalle en [markdown.instructions.md](.github/instructions/markdown.instructions.md).
 - Shell: Bash como shell interactiva en WSL; POSIX `sh` sin bashismos y sin avisos de shellcheck para autoevaluación y hooks. Detalle en [shell.instructions.md](.github/instructions/shell.instructions.md).
-- Python: solo dentro del entorno virtual `.venv/` de la raíz en Ubuntu WSL, con las dependencias declaradas en un archivo versionado. Datos estructurados en JSON con 2 espacios.
+- Python: solo dentro del entorno virtual `.venv/` de la raíz en Ubuntu WSL, con las dependencias declaradas en `pyproject.toml`. Datos estructurados en JSON con 2 espacios.
 - Commits: Conventional Commits, según [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Comandos de verificación
@@ -53,7 +55,9 @@ Entorno virtual de Python, en Bash (Ubuntu WSL) desde la raíz:
 | --- | --- |
 | `python3 -m venv .venv` | Una vez por clon, si `.venv/` no existe. |
 | `source .venv/bin/activate` | Al abrir cada terminal, antes de usar Python o herramientas instaladas en el entorno. |
-| `python -m pip install -r requirements.txt` | Con el entorno activo, para instalar las dependencias ya declaradas. |
+| `python -m pip install .` | Con el entorno activo, para instalar las dependencias declaradas en `pyproject.toml`. |
+
+La puesta en marcha completa desde cero (requisitos por entorno y problemas conocidos) está en [docs/setup.md](docs/setup.md) y se automatiza con `sh scripts/setup.sh`. Las versiones fijadas de la toolchain se declaran en [config/toolchain.env](config/toolchain.env).
 
 ## Límites
 

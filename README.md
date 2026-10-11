@@ -7,7 +7,7 @@ category: guides
 tags: [readme, plantilla, inicio-rapido]
 description: "Qué es esta plantilla, cómo instanciarla en un proyecto nuevo y qué pregunta responde cada documento."
 status: active
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T00:03:58Z
 ---
 
 # Repositorio base universal
@@ -16,13 +16,13 @@ Plantilla agnóstica del lenguaje para proyectos de un único desarrollador asis
 
 ## Inicio rápido
 
-Requisito: Ubuntu (WSL) sobre Windows 11 con Bash y Git (aporta `sh`). Python 3 es opcional, según [ADR-0003](docs/adr/0003-scripting-languages.md) y [ADR-0006](docs/adr/0006-entorno-wsl-ubuntu-bash.md). Los linters son opcionales; su instalación está en [CONTRIBUTING.md](CONTRIBUTING.md).
+Requisito: Ubuntu (WSL) sobre Windows 11 con Bash y Git (aporta `sh`). Python 3 y Node.js forman la toolchain de verificación, según [ADR-0003](docs/adr/0003-scripting-languages.md), [ADR-0006](docs/adr/0006-entorno-wsl-ubuntu-bash.md) y [ADR-0007](docs/adr/0007-pyproject-y-toolchain-fijada.md). Los linters son opcionales; la instalación completa por entorno está en [docs/setup.md](docs/setup.md).
 
 1. Copiar la plantilla en la carpeta del proyecto e inicializar git: `git init -b main`.
-2. Activar el hook pre-commit desde `sh`: `chmod +x .githooks/pre-commit && git config core.hooksPath .githooks` (o la tarea de VS Code *hooks: activar*).
+2. Montar el entorno con `sh scripts/setup.sh`: crea `.venv/`, instala las dependencias de `pyproject.toml`, comprueba la toolchain y activa el hook pre-commit (también desde la tarea de VS Code *setup: entorno*).
 3. Opcional: configurar las bases teóricas externas copiando `config/external-bases.example` a `config/external-bases.local` y completando la ruta, o definiendo la variable de entorno `EXTERNAL_BASES_DIR`. Las reglas de uso están en [AGENTS.md](AGENTS.md).
 4. Ejecutar la autoevaluación: `sh scripts/check.sh` (o la tarea *check: completo*). Debe terminar con código 0.
-5. Adaptar al proyecto: elegir licencia y añadir `LICENSE`, reescribir este README y registrar el stack elegido en un ADR nuevo.
+5. Adaptar al proyecto: elegir licencia y añadir `LICENSE`, reescribir este README, ajustar el `name` de `pyproject.toml` y registrar el stack elegido en un ADR nuevo.
 
 ## Mapa de documentación
 
@@ -32,6 +32,7 @@ Requisito: Ubuntu (WSL) sobre Windows 11 con Bash y Git (aporta `sh`). Python 3 
 | [AGENTS.md](AGENTS.md) | ¿Cómo debe trabajar un agente de IA aquí? Es la fuente única de reglas. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | ¿Cómo está organizado el repositorio y cómo funciona la autoevaluación? |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | ¿Cómo hago un cambio, un documento nuevo o un ADR? |
+| [docs/setup.md](docs/setup.md) | ¿Cómo instalo el entorno desde cero en cada plataforma? |
 | [docs/adr/](docs/adr/README.md) | ¿Por qué se decidió así? |
 | [docs/memory/](docs/memory/README.md) | ¿Qué errores y lecciones ya se aprendieron aquí? |
 | [sandbox/README.md](sandbox/README.md) | ¿Dónde va lo efímero y cómo se promueve o elimina? |

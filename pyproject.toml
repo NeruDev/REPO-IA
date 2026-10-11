@@ -1,0 +1,20 @@
+# Dependencias de Python de la plantilla (estándar del repositorio, ADR-0007).
+# Sustituye a requirements.txt. Instalación, con .venv activo: python -m pip install .
+# El detalle de la puesta en marcha está en docs/setup.md; las versiones de la
+# toolchain completa se declaran en config/toolchain.env.
+# El proyecto no distribuye código: src/ queda vacío hasta elegir el stack del
+# proyecto final; aquí solo se declaran las herramientas de verificación.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repositorio-base-universal"
+version = "0.0.0"
+description = "Herramientas de verificación de la plantilla agnóstica (yamllint)"
+dependencies = [
+  "yamllint==1.38.0",
+]
+
+[tool.setuptools]
+packages = []

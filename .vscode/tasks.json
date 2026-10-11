@@ -37,6 +37,23 @@
       "command": "sh",
       "args": ["-c", "chmod +x .githooks/pre-commit && git config core.hooksPath .githooks"],
       "problemMatcher": []
+    },
+    {
+      "label": "setup: entorno",
+      "detail": "sh scripts/setup.sh: .venv, dependencias de pyproject.toml, toolchain y hook",
+      "type": "process",
+      "command": "sh",
+      "args": ["scripts/setup.sh"],
+      "problemMatcher": []
+    },
+    {
+      "label": "tests: aislamiento",
+      "detail": "sh tests/sandbox.sh: regresiones del área de trabajo efímero",
+      "type": "process",
+      "command": "sh",
+      "args": ["tests/sandbox.sh"],
+      "group": "test",
+      "problemMatcher": []
     }
   ]
 }

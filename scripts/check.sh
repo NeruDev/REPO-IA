@@ -147,16 +147,17 @@ run_check "Enlaces internos" internal-links.sh
 run_check "Memoria del repositorio" memory.sh
 run_check "Configuración externa" external-config.sh
 run_check "Aislamiento del trabajo efímero" sandbox.sh
+run_check "Versiones de la toolchain" toolchain.sh
 
-run_linter "Shell (shellcheck)" shellcheck "sudo apt install shellcheck (o scoop install shellcheck)" lint_shell
-run_linter "Markdown (markdownlint-cli2)" markdownlint-cli2 "npm install -g markdownlint-cli2" lint_markdown
-run_linter "YAML (yamllint)" yamllint "python -m pip install yamllint (con .venv activo) o sudo apt install yamllint" lint_yaml
+run_linter "Shell (shellcheck)" shellcheck "sudo apt install shellcheck (versión en config/toolchain.env); ver docs/setup.md" lint_shell
+run_linter "Markdown (markdownlint-cli2)" markdownlint-cli2 "npm install -g markdownlint-cli2 (versión en config/toolchain.env); ver docs/setup.md" lint_markdown
+run_linter "YAML (yamllint)" yamllint "sh scripts/setup.sh (instala pyproject.toml en .venv/); ver docs/setup.md" lint_yaml
 if [ "${CHECK_NO_NETWORK:-0}" = 1 ]; then
   section "Enlaces externos (lychee)"
   warn "CHECK_NO_NETWORK=1; se omite la comprobación de URLs externas"
   skipped=$((skipped + 1))
 else
-  run_linter "Enlaces externos (lychee)" lychee "https://github.com/lycheeverse/lychee/releases (o scoop install lychee)" lint_links
+  run_linter "Enlaces externos (lychee)" lychee "binario de https://github.com/lycheeverse/lychee/releases (versión en config/toolchain.env); ver docs/setup.md" lint_links
 fi
 
 printf '\n== Resumen: %d fallo(s), %d omitido(s)\n' "$failed" "$skipped"

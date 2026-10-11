@@ -1,5 +1,13 @@
 #!/bin/sh
 # Utilidades compartidas; los llamadores ya están en la raíz de la plantilla.
+
+# Herramientas de la plantilla: priorizar .venv/ para que los chequeos sean
+# deterministas aunque el entorno no esté activo (ADR-0007).
+if [ -d .venv/bin ]; then
+  PATH="$(pwd -P)/.venv/bin${PATH:+:$PATH}"
+  export PATH
+fi
+
 errors=0
 
 err() {

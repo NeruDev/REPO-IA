@@ -1,0 +1,18 @@
+---
+# Verificación automática con la misma imagen de desarrollo que docs/setup.md (ADR-0007).
+"name": check
+"on":
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construir la imagen de desarrollo
+        run: docker build -t plantilla-base .
+      - name: Autoevaluación en el contenedor
+        run: docker run --rm -v "$PWD:/repo" -w /repo plantilla-base sh -c 'chmod +x .githooks/pre-commit && git config core.hooksPath .githooks && CHECK_NO_NETWORK=1 sh scripts/check.sh'
+      - name: Regresiones del aislamiento efímero
+        run: docker run --rm -v "$PWD:/repo" -w /repo plantilla-base sh tests/sandbox.sh

@@ -7,7 +7,7 @@ category: architecture
 tags: [adr, shell, powershell, python, venv, json, dependencias]
 description: "Amplía los lenguajes permitidos: la autoevaluación sigue en POSIX sh y las utilidades pueden usar PowerShell 7 o Python dentro de .venv/. Sustituye el tema Dependencias del ADR-0001."
 status: accepted
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T00:03:58Z
 ---
 
 # 0003 — Lenguajes de script: POSIX sh, PowerShell 7 y Python en entorno virtual
@@ -45,7 +45,7 @@ Comandos del entorno virtual en PowerShell:
 | --- | --- |
 | `python -m venv .venv` | Crear el entorno, una vez por clon. |
 | `.\.venv\Scripts\Activate.ps1` | Activarlo en cada sesión de terminal. |
-| `python -m pip install -r requirements.txt` | Instalar las dependencias declaradas, con el entorno activo. |
+| `python -m pip install .` | Instalar las dependencias declaradas en `pyproject.toml`, con el entorno activo. |
 | `deactivate` | Salir del entorno. |
 
 Este ADR sustituye la fila «Dependencias» del ADR-0001 y la frase según la cual todos los scripts se escriben en POSIX `sh`. El resto del ADR-0001 sigue vigente.
@@ -64,4 +64,4 @@ Este ADR sustituye la fila «Dependencias» del ADR-0001 y la frase según la cu
 
 ## Más información
 
-El entorno interactivo y la activación de `.venv/` se actualizan para Ubuntu (WSL) y Bash en el [ADR-0006](0006-entorno-wsl-ubuntu-bash.md).
+El entorno interactivo y la activación de `.venv/` se actualizan para Ubuntu (WSL) y Bash en el [ADR-0006](0006-entorno-wsl-ubuntu-bash.md). El manifiesto de dependencias (`pyproject.toml`) y la toolchain fijada los adopta el [ADR-0007](0007-pyproject-y-toolchain-fijada.md).

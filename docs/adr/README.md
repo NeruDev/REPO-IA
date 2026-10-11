@@ -7,7 +7,7 @@ category: architecture
 tags: [adr, madr, indice, decisiones]
 description: "Índice de los ADR del repositorio, con su estado, y plantilla MADR adaptada al esquema de frontmatter del repo."
 status: active
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T00:03:58Z
 ---
 
 # Decisiones de arquitectura
@@ -24,6 +24,7 @@ Los ADR registran el porqué de las decisiones que un agente o una persona no de
 | [0004](0004-repository-memory.md) | Memoria del repositorio: índice, entradas atómicas y presupuestos verificables | accepted |
 | [0005](0005-ephemeral-workspace.md) | Trabajo efímero aislado, limpieza segura y promoción explícita | accepted |
 | [0006](0006-entorno-wsl-ubuntu-bash.md) | Entorno por defecto: Ubuntu (WSL) sobre Windows 11 y Bash como shell base (sustituye el tema Entorno de 0001) | accepted |
+| [0007](0007-pyproject-y-toolchain-fijada.md) | pyproject.toml, toolchain fijada y contenedor de desarrollo (sustituye requirements.txt de 0003 y 0006) | accepted |
 
 ## Plantilla
 

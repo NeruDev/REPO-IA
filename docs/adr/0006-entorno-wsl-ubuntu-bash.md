@@ -7,7 +7,7 @@ category: architecture
 tags: [adr, entorno, wsl, ubuntu, bash, venv]
 description: "Fija Ubuntu (WSL) sobre Windows 11 como entorno de desarrollo, Bash como shell base y adapta la configuración del entorno virtual. Sustituye el tema Entorno de ADR-0001 y actualiza ADR-0003."
 status: accepted
-updated_at: 2026-10-10T22:30:00Z
+updated_at: 2026-10-11T00:03:58Z
 ---
 
 # 0006 — Entorno por defecto: Ubuntu (WSL) sobre Windows 11 y Bash como shell base
@@ -48,7 +48,7 @@ Comandos del entorno virtual en Bash:
 | --- | --- |
 | `python3 -m venv .venv` | Crear el entorno, una vez por clon. |
 | `source .venv/bin/activate` | Activarlo en cada sesión de terminal. |
-| `python -m pip install -r requirements.txt` | Instalar las dependencias declaradas, con el entorno activo. |
+| `python -m pip install .` | Instalar las dependencias declaradas en `pyproject.toml`, con el entorno activo. |
 | `deactivate` | Salir del entorno. |
 
 Este ADR sustituye el tema «Entorno» del [ADR-0001](0001-foundational-decisions.md) y actualiza el [ADR-0003](0003-scripting-languages.md) en cuanto a la shell interactiva por defecto y comandos de activación de `.venv/`. El resto de las decisiones de ambos ADRs permanece vigente.
@@ -69,3 +69,4 @@ Este ADR sustituye el tema «Entorno» del [ADR-0001](0001-foundational-decision
 
 - [ADR-0001](0001-foundational-decisions.md): Decisiones fundacionales de la plantilla.
 - [ADR-0003](0003-scripting-languages.md): Lenguajes de script.
+- [ADR-0007](0007-pyproject-y-toolchain-fijada.md): Dependencias en `pyproject.toml` y toolchain fijada.

@@ -1,0 +1,9 @@
+{
+  "name": "Repositorio base universal",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "root",
+  "postCreateCommand": "sh scripts/setup.sh"
+}

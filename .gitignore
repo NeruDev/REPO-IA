@@ -13,6 +13,7 @@ desktop.ini
 # Entorno virtual de Python (ADR-0003)
 .venv/
 __pycache__/
+*.egg-info/
 
 # Editor: solo se versionan las tareas y exclusiones compartidas
 .vscode/*

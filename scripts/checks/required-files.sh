@@ -19,6 +19,8 @@ AGENTS.md
 ARCHITECTURE.md
 CONTRIBUTING.md
 CLAUDE.md
+docs/setup.md
+pyproject.toml
 .github/copilot-instructions.md
 .github/instructions/markdown.instructions.md
 .github/instructions/shell.instructions.md
@@ -26,12 +28,14 @@ docs/adr/README.md
 docs/memory/README.md
 docs/memory/entries.md
 config/external-bases.example
+config/toolchain.env
 .editorconfig
 .gitattributes
 .gitignore
 .markdownlint-cli2.jsonc
 .yamllint.yaml
 .vscode/tasks.json
+.vscode/settings.json
 .githooks/pre-commit
 EOF
 
